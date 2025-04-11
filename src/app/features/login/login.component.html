@@ -1,0 +1,59 @@
+<div class="login-container">
+  <div class="login-card">
+    <form [formGroup]="loginForm" (ngSubmit)="onSubmit()" class="text-center">
+
+      <!-- Logo -->
+      <img src="../../../assets/tabus.png" alt="Logo" class="logo-img"/>
+
+      <hr/>
+      <h5 class="title">İstifadəçinin autentifikasiyası</h5>
+      <hr/>
+
+      <!-- Company Key -->
+      <div class="input-group">
+        <input
+          [type]="showCompanyKey ? 'text' : 'password'"
+          placeholder="Şirkətin açarı"
+          formControlName="companyKey"
+        />
+        <i
+          class="bi"
+          [ngClass]="showCompanyKey ? 'bi-eye' : 'bi-eye-slash'"
+          (click)="toggleCompanyKey()"
+          class="toggle-icon"
+          title="Şirkət açarını göstər/gizlət"
+        ></i>
+      </div>
+
+      <!-- Username -->
+      <div class="input-group">
+        <input type="text" placeholder="İstifadəçi adı" formControlName="username"/>
+      </div>
+
+      <!-- Password -->
+      <div class="input-group">
+        <input
+          [type]="showPassword ? 'text' : 'password'"
+          placeholder="Şifrə"
+          formControlName="password"/>
+        <i class="bi"
+           [ngClass]="showPassword ? 'bi-eye' : 'bi-eye-slash'"
+           (click)="togglePassword()"
+           class="toggle-icon"
+           title="Şifrəni göstər/gizlət"></i>
+      </div>
+
+      <!-- Buttons -->
+      <div class="button-group">
+        <button type="button" class="btn outline">Qeydiyyat</button>
+        <button type="submit" class="btn filled" [disabled]="loginForm.invalid">Daxil ol</button>
+      </div>
+
+
+      <p class="forgot">Şifrənizi unutmusunuz?</p>
+      <p class="version">Version: 2.0.48</p>
+    </form>
+  </div>
+</div>
+
+
