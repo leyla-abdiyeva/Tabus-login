@@ -2,7 +2,7 @@ import {inject, Injectable, OnInit} from '@angular/core';
 import {Observable, of, tap} from 'rxjs';
 import {Router} from '@angular/router';
 import {catchError} from 'rxjs/operators';
-import {StoreService} from '../store/store.service';
+import {StoreService} from '../services/store/store.service';
 
 @Injectable({
   providedIn: 'root'

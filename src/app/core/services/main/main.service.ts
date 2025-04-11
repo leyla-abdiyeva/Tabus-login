@@ -36,8 +36,5 @@ export class MainService {
   sendData(data: any) {
     this.dataSubject.next(data);
   }
-  getDataObservable(): Observable<any> {
-    return this.dataSubject.asObservable();
-  }
 
 }

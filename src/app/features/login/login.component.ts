@@ -4,7 +4,7 @@ import {NgClass} from '@angular/common';
 import {Router} from '@angular/router';
 import {AuthService} from '../../core/auth/auth.service';
 import {catchError, Observable, of} from 'rxjs';
-import {StoreService} from '../../core/store/store.service';
+import {StoreService} from '../../core/services/store/store.service';
 import {CookieService} from 'ngx-cookie-service';
 
 @Component({

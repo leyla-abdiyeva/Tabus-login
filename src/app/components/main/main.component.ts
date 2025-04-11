@@ -1,7 +1,7 @@
 import {Component, inject, OnInit} from '@angular/core';
 import {AuthService} from '../../core/auth/auth.service';
 import {HttpClient} from '@angular/common/http';
-import {MainService} from '../../core/main/main.service';
+import {MainService} from '../../core/services/main/main.service';
 import {MenuComponent} from '../sidebar/menu/menu.component';
 
 @Component({

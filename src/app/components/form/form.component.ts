@@ -1,8 +1,36 @@
 import {Component, OnInit} from '@angular/core';
+import {
+  MatCell,
+  MatCellDef,
+  MatColumnDef,
+  MatHeaderCell,
+  MatHeaderCellDef,
+  MatHeaderRow, MatHeaderRowDef, MatRow, MatRowDef,
+  MatTable
+} from '@angular/material/table';
+import {NgForOf, NgIf} from '@angular/common';
+import {FormsModule} from '@angular/forms';
+import {MatButton} from '@angular/material/button';
 
 @Component({
   selector: 'app-form',
   templateUrl: './form.component.html',
+  imports: [
+    MatTable,
+    NgForOf,
+    MatColumnDef,
+    FormsModule,
+    MatHeaderCell,
+    MatCell,
+    MatHeaderCellDef,
+    MatCellDef,
+    MatHeaderRow,
+    MatRow,
+    MatHeaderRowDef,
+    MatRowDef,
+    NgIf,
+    MatButton,
+  ],
   styleUrls: ['./form.component.css']
 })
 export class FormComponent implements OnInit {
