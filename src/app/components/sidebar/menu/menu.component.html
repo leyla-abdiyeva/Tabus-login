@@ -1,16 +1,33 @@
 <mat-sidenav-container class="sidenav-container">
+  <!-- Sidebar Menu -->
   <mat-sidenav mode="side" opened class="sidenav">
-    <div class="menu-title">MENU</div>
+<!--    <div class="menu-title">MENU</div>-->
+
+    <div class="menu-title">
+      <div class="toggle-button" (click)="menuExpanded = !menuExpanded">
+        Menu
+        <span class="arrow">{{ menuExpanded ? '▼' : '▶' }}</span>
+      </div>
+    </div>
 
     <ng-container *ngIf="menuLoaded; else loading">
-      <mat-tree [dataSource]="dataSource" [treeControl]="treeControl">
-        <!-- Leaf Node -->
-        <mat-tree-node *matTreeNodeDef="let node" matTreeNodePadding>
-          <div class="menu-item" (click)="onItemClick(node)">
-            <span class="icon">🏠</span>
+      <mat-tree [dataSource]="dataSource" [treeControl]="treeControl" *ngIf="menuExpanded" >
+
+        <!-- Nested Tree Node (works for both leaf and expandable nodes) -->
+        <mat-nested-tree-node *matTreeNodeDef="let node">
+          <div class="menu-item" [class.selected]="node === selectedNode" (click)="onItemClick(node)">
+            <span class="icon">{{ hasChild(0, node) ? '📁' : '🏠' }}</span>
             <span class="label">{{ node.name }}</span>
+            <span class="arrow" *ngIf="hasChild(0, node)">
+      {{ treeControl.isExpanded(node) ? '▼' : '▶' }}
+    </span>
           </div>
-        </mat-tree-node>
+
+          <div *ngIf="treeControl.isExpanded(node)">
+            <ng-container matTreeNodeOutlet></ng-container>
+          </div>
+        </mat-nested-tree-node>
+
 
         <!-- Expandable Node -->
         <mat-nested-tree-node *matTreeNodeDef="let node; when: hasChild">
@@ -24,10 +41,59 @@
           </div>
         </mat-nested-tree-node>
       </mat-tree>
+
+      <!-- Favorites Section -->
+      <div class="menu-item" (click)="favoritesExpanded = !favoritesExpanded">
+        <span class="icon">⭐</span>
+        <span class="label">Favorites</span>
+        <span class="arrow">{{ favoritesExpanded ? '▼' : '▶' }}</span>
+      </div>
+
+      <div *ngIf="favoritesExpanded" class="favorites-section">
+        <div *ngFor="let fav of favoritesData" class="menu-item" (click)="onItemClick(fav)">
+          <span class="icon">📌</span>
+          <span class="label">{{ fav.name }}</span>
+        </div>
+      </div>
+
+      <!-- System Info Section -->
+      <div class="menu-item" (click)="infoExpanded = !infoExpanded">
+        <span class="icon">🛠️</span>
+        <span class="label">System Info</span>
+        <span class="arrow">{{ infoExpanded ? '▼' : '▶' }}</span>
+      </div>
+
+      <div *ngIf="infoExpanded" class="info-section">
+        <div *ngFor="let item of infoData | keyvalue">
+          <p><strong>{{ item.key }}</strong>: {{ item.value }}</p>
+        </div>
+      </div>
+
     </ng-container>
 
     <ng-template #loading>
       <div class="loading">Loading menu...</div>
     </ng-template>
   </mat-sidenav>
+
+  <!-- Main Content Area -->
+  <div class="content" *ngIf="formData">
+    <h2>{{ formData.title }}</h2>
+    <p><strong>Label:</strong> {{ formData.label }}</p>
+    <p><strong>Encrypted ID:</strong> {{ formData.encrform }}</p>
+
+    <table *ngIf="formData.tabledata?.length">
+      <thead>
+      <tr>
+        <th *ngFor="let col of formData.headerdata">{{ col.label }}</th>
+      </tr>
+      </thead>
+      <tbody>
+      <tr *ngFor="let row of formData.tabledata">
+        <td *ngFor="let col of formData.headerdata">{{ row[col.name] }}</td>
+      </tr>
+      </tbody>
+    </table>
+  </div>
+
 </mat-sidenav-container>

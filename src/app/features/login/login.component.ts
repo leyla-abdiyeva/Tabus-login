@@ -80,8 +80,6 @@ export class LoginComponent implements OnInit {
           })
         )
         .subscribe((response) => {
-          alert("xd" + JSON.stringify(response)); // For debugging
-
           if (response && response !== 'error') {
             alert("response gəldi");
             console.log(response);

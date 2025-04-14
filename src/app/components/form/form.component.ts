@@ -1,91 +1,115 @@
-import {Component, OnInit} from '@angular/core';
+import { Component, OnInit, inject } from '@angular/core';
+import { MainService } from '../../core/services/main/main.service';
+import { StoreService } from '../../core/services/store/store.service';
+import { IGX_TREE_GRID_DIRECTIVES, IgxGridComponent, IgxButtonDirective } from 'igniteui-angular';
+import { NgForOf, NgIf } from '@angular/common';
+import { FormsModule } from '@angular/forms';
+import { MatButton } from '@angular/material/button';
 import {
   MatCell,
-  MatCellDef,
-  MatColumnDef,
+  MatCellDef, MatColumnDef,
   MatHeaderCell,
   MatHeaderCellDef,
-  MatHeaderRow, MatHeaderRowDef, MatRow, MatRowDef,
+  MatHeaderRow, MatHeaderRowDef,
+  MatRow, MatRowDef,
   MatTable
 } from '@angular/material/table';
-import {NgForOf, NgIf} from '@angular/common';
-import {FormsModule} from '@angular/forms';
-import {MatButton} from '@angular/material/button';
 
 @Component({
   selector: 'app-form',
+  standalone: true,
   templateUrl: './form.component.html',
+  styleUrls: ['./form.component.css'],
   imports: [
-    MatTable,
+    IgxGridComponent,
+    IGX_TREE_GRID_DIRECTIVES,
+    IgxButtonDirective,
+    NgIf,
     NgForOf,
-    MatColumnDef,
     FormsModule,
+    MatTable,
     MatHeaderCell,
     MatCell,
-    MatHeaderCellDef,
-    MatCellDef,
     MatHeaderRow,
     MatRow,
+    MatButton,
+    MatCellDef,
+    MatHeaderCellDef,
+    MatColumnDef,
     MatHeaderRowDef,
     MatRowDef,
-    NgIf,
-    MatButton,
-  ],
-  styleUrls: ['./form.component.css']
+  ]
 })
 export class FormComponent implements OnInit {
+  private storeService = inject(StoreService);
+  private mainService = inject(MainService);
+
   label = '';
   title = '';
   encrform = '';
+  tabno = '';
   headerdata: any[] = [];
   tabledata: any[] = [];
   buttons: any[] = [];
   dataaction: any[] = [];
-
   displayedColumns: string[] = [];
 
-  ngOnInit() {
-    // Simulated response from API — replace this with your service call
-    const result = {
-      params: [
+  ngOnInit(): void {
+    this.mainService.formData$.subscribe((response: any) => {
+      const action = response?.actions?.find((a: any) => a.actiontype === 'getForm');
+      if (action?.receivedData?.params?.length) {
+        this.loadForm(action.receivedData.params[0]);
+      }
+      console.log('formdata',this.loadForm);
+    });
+
+    this.handleAction(0);
+    let datas = {
+      'frontend_post': "init",
+    };
+    console.error(datas);
+
+    const initPayload = {
+      frontend_post: "init"
+    };
+
+    this.storeService.onLoadData(initPayload).subscribe(response => {
+      this.storeService.actionsStore(response); // handle response with actionsStore()
+    });
+
+  }
+
+  loadForm(form: any): void {
+    this.label = form.label || '';
+    this.title = form.title || '';
+    this.encrform = form.encrform || '';
+    this.tabno = form.tabno || '';
+    this.headerdata = form.headerdata || [];
+    this.tabledata = form.tabledata || [];
+    this.buttons = form.buttons || [];
+    this.dataaction = form.dataaction || [];
+    this.displayedColumns = this.headerdata.map(h => h.name);
+  }
+
+  handleAction(button: any): void {
+    console.log('Action:', button.buttonname);
+    console.log('Data:', this.tabledata);
+    console.log('Form ID:', this.encrform, 'Tab:', this.tabno);
+
+    const data = {
+      actions: [
         {
-          label: 'Account List',
-          title: 'Account Details',
-          encrform: 'ENCRYPTED_ID',
-          tabledata: [
-            { account_name: 'Cash', account_code: '101' },
-            { account_name: 'Bank', account_code: '102' }
-          ],
-          headerdata: [
-            { name: 'account_name', label: 'Account Name', type: 'TEXTFIELD' },
-            { name: 'account_code', label: 'Account Code', type: 'TEXTFIELD' }
-          ],
-          buttons: [
-            {
-              buttonname: 'Save',
-              actiontype: 'callFileWithCallBack',
-              params: [{ callBackAction: 'saveAccounts', callBackModule: 'Accounts' }]
-            }
-          ],
-          dataaction: []
+          actiontype: button.actiontype,
+          receivedData: {
+            tabledata: this.tabledata,
+            tabno: this.tabno,
+            encrform: this.encrform,
+            ...button.params?.[0]
+          }
         }
       ]
     };
 
-    const form = result.params[0];
-    this.label = form.label;
-    this.title = form.title;
-    this.encrform = form.encrform;
-    this.headerdata = form.headerdata;
-    this.tabledata = form.tabledata;
-    this.buttons = form.buttons;
-    this.dataaction = form.dataaction;
-    this.displayedColumns = this.headerdata.map(h => h.name);
-  }
-
-  handleAction(button: any) {
-    console.log('Action triggered:', button.buttonname);
-    console.log('Data:', this.tabledata);
-    // Add actual API logic here using button.params[0]
+    this.mainService.sendData(data);
   }
 }

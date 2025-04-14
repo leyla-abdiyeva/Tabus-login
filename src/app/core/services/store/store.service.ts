@@ -12,7 +12,7 @@ export class StoreService {
   private redirectval_path = "main/html/handler.php"; // Path to your PHP handler
 
   private http = inject(HttpClient);
-  private cookieService= inject(CookieService);
+  private cookieService = inject(CookieService);
 
 
   constructor() {
@@ -61,20 +61,20 @@ export class StoreService {
     console.log('Received data:', receivedData);
 
     const actions = receivedData.actions;
-
+    console.error('Received actions:', actions);
     if (!Array.isArray(actions)) {
       console.warn('No actions array found in response.');
       return;
     }
 
     for (let i = 0; i < actions.length; i++) {
+      alert(JSON.stringify(actions[i], null, 2));
       const action = actions[i];
       const type = action.actiontype;
 
       console.log(`Processing action #${i + 1} of type: ${type}`);
       console.log('Action content:', action);
 
-      // Here you could expand with actual logic based on actiontype
       switch (type) {
         case 'init':
           console.log('→ Init action:', action.receivedData);
@@ -88,10 +88,68 @@ export class StoreService {
           console.log('→ Login action:', action.params || action.receivedData);
           break;
 
-        // Add other types as needed...
+        case 'getForm': {
+          const formPayload = this.extractReceivedData(action);
+
+          if (!formPayload.encrVar) {
+            console.warn("Missing encrVar in getForm action:", formPayload);
+            break;
+          }
+          this.onLoadData(formPayload).subscribe(response => {
+            console.log("↳ getForm response (nested):", response);
+          });
+          break;
+        }
+
         default:
           console.log(`→ Unhandled action type "${type}"`, action);
       }
     }
   }
+
+  private extractReceivedData(action: any): any {
+    const rd = action.receivedData ?? {};
+    return {
+      frontend_post: rd.frontend_post || action.frontend_post || 'getForm',
+      encrVar: rd.encrVar,
+      token: rd.token,
+      entity: rd.entity,
+      langSyst: rd.langSyst || 'en'
+    };
+  }
+
+
+
+  fetchAllAppData(): void {
+    const lang = this.cookieService.get('Language');
+
+    const requests = [
+      {
+        name: 'getUserData',
+        data: {frontend_post: 'getUserData', langSyst: lang}
+      },
+      {
+        name: 'getMenu',
+        data: {frontend_post: 'getMenu', langSyst: lang}
+      },
+      {
+        name: 'getFavorites',
+        data: {frontend_post: 'getFavorites', langSyst: lang}
+      },
+      {
+        name: 'getInfo',
+        data: {frontend_post: 'getInfo', langSyst: lang}
+      }
+    ];
+    console.log('this is requests', requests)
+
+    requests.forEach(req => {
+      this.onLoadData(req.data).subscribe(response => {
+        console.log(`📦 ${req.name} response:`, response);
+        this.actionsStore(response); // Optional: to route through your existing logic
+      });
+    });
+  }
+
+
 }
