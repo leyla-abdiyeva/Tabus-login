@@ -15,9 +15,9 @@ export class AuthService {
   }
 
   // Login Method - Login and save token and user data
-  login(username: string, password: string, companyKey: string): Observable<any> {
+  login(username: string, password: string, skey: string): Observable<any> {
     const sendDatas = {
-      companyKey: companyKey,
+      skey: skey,
       username: username,
       password: password,
       frontend_post: 'login'  // Use this action to identify the login request on the backend
@@ -26,7 +26,6 @@ export class AuthService {
     return this.storeService.onLoadData(sendDatas).pipe(
       tap(response => {
         if (response !== 'error') {
-          console.log('Login successful!', response);
           localStorage.setItem('token', response.token);  // Store the token
           localStorage.setItem('userData', JSON.stringify(response.userData));  // Store user data
 

@@ -1,5 +1,5 @@
 import {inject, Injectable} from '@angular/core';
-import {Observable, of, Subject, tap} from 'rxjs';
+import {BehaviorSubject, Observable, of, Subject, tap} from 'rxjs';
 import {catchError} from 'rxjs/operators';
 import {StoreService} from '../store/store.service';
 
@@ -8,7 +8,7 @@ import {StoreService} from '../store/store.service';
 })
 export class MainService {
   private storeService = inject(StoreService);
-  private formDataSubject = new Subject<any>();
+  private formDataSubject = new BehaviorSubject<any>(null);
   formData$ = this.formDataSubject.asObservable();
 
   constructor() {}
@@ -28,7 +28,6 @@ export class MainService {
         }
       }),
       catchError(error => {
-        console.error('Login error:', error);
         return of('error');
       })
     );

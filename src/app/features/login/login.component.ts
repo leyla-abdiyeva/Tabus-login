@@ -40,7 +40,7 @@ export class LoginComponent implements OnInit {
 
 
   loginForm = new FormGroup({
-    companyKey: new FormControl('dev', Validators.required),
+    skey: new FormControl('dev', Validators.required),
     username: new FormControl('Leyla', Validators.required),
     password: new FormControl('12345', Validators.required),
   });
@@ -66,7 +66,7 @@ export class LoginComponent implements OnInit {
       return;
     }
 
-    const companyKey = this.loginForm.value.companyKey ?? '';
+    const companyKey = this.loginForm.value.skey ?? '';
     const username = this.loginForm.value.username ?? '';
     const password = this.loginForm.value.password ?? '';
 
@@ -81,7 +81,6 @@ export class LoginComponent implements OnInit {
         )
         .subscribe((response) => {
           if (response && response !== 'error') {
-            alert("response gəldi");
             console.log(response);
 
             // Call the StoreService action logger here
@@ -109,7 +108,6 @@ export class LoginComponent implements OnInit {
           }
         });
     } else {
-      alert("error" + 122222);
       this.loginError.set(true);
     }
   }

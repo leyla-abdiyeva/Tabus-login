@@ -1,5 +1,5 @@
 import {inject, Injectable, OnInit} from '@angular/core';
-import {Observable, of} from 'rxjs';
+import {Observable, of, Subject} from 'rxjs';
 import {catchError, map} from 'rxjs/operators';
 import {HttpClient} from '@angular/common/http';
 import {CookieService} from 'ngx-cookie-service';
@@ -13,22 +13,25 @@ export class StoreService {
 
   private http = inject(HttpClient);
   private cookieService = inject(CookieService);
-
+  public formDataSubject = new Subject<any>();
 
   constructor() {
   }
 
   public onLoadData(sendDatas: any): Observable<any> {
     // Ensure default values are set, even during login
-    // const token = localStorage.getItem('token') ?? '';
-    const token = this.cookieService.get('uID_i') || '';
-    const entity = localStorage.getItem('entity') ?? 'main'; // Default entity
-    const langSyst = localStorage.getItem('langSyst') ?? 'en'; // Default language
+
+    const token = this.cookieService.get('uID_i') || '67ff50f596c85';
+    const entity = localStorage.getItem('entity') ?? 'dev'; // Default entity
+    const langSyst = localStorage.getItem('langSyst') ?? 'az'; // Default language
 
     // Attach them to all requests
     sendDatas.token = token;
     sendDatas.entity = entity;
     sendDatas.langSyst = langSyst;
+
+    console.log('🔧 Final data sent to backend:', sendDatas);
+
 
     const body = JSON.stringify(sendDatas);
 
@@ -73,7 +76,6 @@ export class StoreService {
       const type = action.actiontype;
 
       console.log(`Processing action #${i + 1} of type: ${type}`);
-      console.log('Action content:', action);
 
       switch (type) {
         case 'init':
@@ -97,6 +99,7 @@ export class StoreService {
           }
           this.onLoadData(formPayload).subscribe(response => {
             console.log("↳ getForm response (nested):", response);
+            this.formDataSubject.next(response);
           });
           break;
         }
@@ -109,6 +112,7 @@ export class StoreService {
 
   private extractReceivedData(action: any): any {
     const rd = action.receivedData ?? {};
+    alert(rd);
     return {
       frontend_post: rd.frontend_post || action.frontend_post || 'getForm',
       encrVar: rd.encrVar,
@@ -117,7 +121,6 @@ export class StoreService {
       langSyst: rd.langSyst || 'en'
     };
   }
-
 
 
   fetchAllAppData(): void {
@@ -141,7 +144,6 @@ export class StoreService {
         data: {frontend_post: 'getInfo', langSyst: lang}
       }
     ];
-    console.log('this is requests', requests)
 
     requests.forEach(req => {
       this.onLoadData(req.data).subscribe(response => {
@@ -150,6 +152,4 @@ export class StoreService {
       });
     });
   }
-
-
 }
