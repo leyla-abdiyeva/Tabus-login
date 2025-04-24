@@ -15,10 +15,13 @@ import {MenuComponent} from '../sidebar/menu/menu.component';
 })
 export class MainComponent implements OnInit{
   private mainService= inject(MainService);
+  private authService= inject(AuthService);
+
   menuItems: any;
 
 
   ngOnInit() {
+    this.triggerInit();
     this.loadData();
   }
 
@@ -26,11 +29,36 @@ export class MainComponent implements OnInit{
     this.mainService.fetchMenuItems().subscribe(
       (response) => {
         this.menuItems = response;
-        console.log('Menu items fetched successfully', this.menuItems);
+        console.log('Menu items fetched successfully', response);
       },
       (error) => {
         console.error('Error fetching menu items:', error);
       }
     );
   }
+
+  private triggerInit(): void {
+    const data = {
+      actions: [
+        {
+          actiontype: 'init',
+          receivedData: {
+            frontend_post: 'init'
+          }
+        }
+      ],
+      console: '',
+      errors: ''
+    };
+
+    // Here, you can either directly call a handler or pass it to your service
+    // For now, we'll just log or pass it to MainService if needed
+    console.log('Triggering init action:', data);
+
+    // Optionally send it to mainService if you want to forward it
+    this.mainService.handleInit(data);
+  }
+
+
+
 }

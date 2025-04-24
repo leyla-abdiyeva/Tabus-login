@@ -95,7 +95,6 @@ export class LoginComponent implements OnInit {
             }
 
             this.storeService.actionsStore(response);
-            this.storeService.initService();
 
             if (response.username != null) {
               console.log('Login successful!');

@@ -50,7 +50,6 @@ export class MenuComponent implements OnInit {
 
   ngOnInit(): void {
     this.loadMenu();
-    this.loadFormData();
     this.loadInfoData();
     this.loadFavoritesData()
     this.storeService.fetchAllAppData();
@@ -69,13 +68,6 @@ export class MenuComponent implements OnInit {
     });
   }
 
-  loadFormData(): void {
-    this.mainService.formData$.subscribe(data => {
-      console.log('Form Data received:', data);
-      this.formData = data;
-    });
-  }
-
   loadInfoData(): void {
     const lang = this.cookieService.get('Language');
     const data = {
@@ -87,7 +79,6 @@ export class MenuComponent implements OnInit {
       const infoAction = response.actions?.find((a: any) => a.actiontype === 'updateInfo');
       if (infoAction?.params) {
         this.infoData = infoAction.params;
-        console.log('ℹ️ Info data loaded:', this.infoData);
       }
     });
   }
@@ -103,7 +94,6 @@ export class MenuComponent implements OnInit {
       const favAction = response.actions?.find((a: any) => a.actiontype === 'updateFavorites');
       if (favAction?.params) {
         this.favoritesData = favAction.params;
-        console.log('⭐ Favorites data loaded:', this.favoritesData);
       }
     });
   }

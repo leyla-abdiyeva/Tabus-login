@@ -1,37 +1,165 @@
-import {inject, Injectable, OnInit} from '@angular/core';
-import {Observable, of, Subject} from 'rxjs';
-import {catchError, map} from 'rxjs/operators';
-import {HttpClient} from '@angular/common/http';
-import {CookieService} from 'ngx-cookie-service';
+// import {inject, Injectable} from '@angular/core';
+// import {Observable, of} from 'rxjs';
+// import {catchError, map} from 'rxjs/operators';
+// import {HttpClient} from '@angular/common/http';
+// import {CookieService} from 'ngx-cookie-service';
+//
+// @Injectable({
+//   providedIn: 'root'
+// })
+// export class StoreService {
+//   private mainBase: string = "https://dev.tabus.net/";
+//   private redirectval_path = "main/html/handler.php"; // Path to your PHP handler
+//
+//   private http = inject(HttpClient);
+//   private cookieService = inject(CookieService);
+//
+//   constructor() {
+//   }
+//
+//   public onLoadData(sendDatas: any): Observable<any> {
+//     // Ensure default values are set, even during login
+//
+//     // open only for development (to work with localhost)
+//     if (localStorage.getItem('token') !== null || localStorage.getItem('token') !== undefined){
+//       sendDatas['token'] = localStorage.getItem('token');
+//       sendDatas['entity'] = localStorage.getItem('entity');
+//     }else {
+//       alert("missing token");
+//     }
+//
+//     console.log('Sending to server: ');
+//     console.log(sendDatas);
+//
+//
+//     // const token = this.cookieService.get('uID_i') || "68075d6c56e15";
+//     // const entity = localStorage.getItem('entity') ?? 'dev';
+//     // const langSyst = localStorage.getItem('langSyst') ?? 'az';
+//     //
+//     // // Attach them to all requests
+//     // sendDatas.token = token;
+//     // sendDatas.entity = entity;
+//     // sendDatas.langSyst = langSyst;
+//
+//     const body = JSON.stringify(sendDatas);
+//
+//
+//     return this.http.post<any>(`${this.mainBase + this.redirectval_path}`, body, {
+//       responseType: 'json',
+//       withCredentials: true
+//     }).pipe(
+//       map(response => (response && response !== 'error') ? response : 'error'),
+//       catchError(error => {
+//         console.error('Data load error:', error);
+//         return of('error');
+//       })
+//     );
+//   }
+//
+//   actionsStore(receivedData: any) {
+//     if (!receivedData || receivedData === 'error') {
+//       console.warn('Received invalid or error response:', receivedData);
+//       return;
+//     }
+//
+//     const actions = receivedData.actions;
+//     if (!Array.isArray(actions)) {
+//       console.warn('No actions array found in response.');
+//       return;
+//     }
+//
+//     for (let i = 0; i < actions.length; i++) {
+//       const action = actions[i];
+//       const type = action.actiontype;
+//
+//       switch (type) {
+//         case 'init':
+//           // const sendDatas = action.receivedData;
+//           // this.onLoadData(sendDatas);
+//           break;
+//
+//         case 'updateInfo':
+//           break;
+//
+//         case 'login':
+//           break;
+//       }
+//     }
+//   }
+//
+//   fetchAllAppData(): void {
+//     const lang = this.cookieService.get('Language');
+//
+//     const requests = [
+//       {
+//         name: 'getUserData',
+//         data: {
+//           frontend_post: 'getUserData',
+//           langSyst: lang}
+//       },
+//       {
+//         name: 'getMenu',
+//         data: {
+//           frontend_post: 'getMenu',
+//           langSyst: lang}
+//       },
+//       {
+//         name: 'getFavorites',
+//         data: {
+//           frontend_post: 'getFavorites',
+//           langSyst: lang}
+//       },
+//       {
+//         name: 'getInfo',
+//         data: {
+//           frontend_post: 'getInfo',
+//           langSyst: lang}
+//       }
+//     ];
+//
+//     requests.forEach(req => {
+//       this.onLoadData(req.data).subscribe(response => {
+//         this.actionsStore(response); // Optional: to route through your existing logic
+//       });
+//     });
+//   }
+// }
+
+
+
+
+
+
+
+
+import { inject, Injectable } from '@angular/core';
+import { Observable, of } from 'rxjs';
+import { catchError, map } from 'rxjs/operators';
+import { HttpClient } from '@angular/common/http';
+import { CookieService } from 'ngx-cookie-service';
 
 @Injectable({
   providedIn: 'root'
 })
 export class StoreService {
   private mainBase: string = "https://dev.tabus.net/";
-  private redirectval_path = "main/html/handler.php"; // Path to your PHP handler
+  private redirectval_path = "main/html/handler.php";
 
   private http = inject(HttpClient);
   private cookieService = inject(CookieService);
-  public formDataSubject = new Subject<any>();
 
-  constructor() {
-  }
+  constructor() {}
 
   public onLoadData(sendDatas: any): Observable<any> {
-    // Ensure default values are set, even during login
+    if (localStorage.getItem('token') !== null || localStorage.getItem('token') !== undefined) {
+      sendDatas['token'] = localStorage.getItem('token');
+      sendDatas['entity'] = localStorage.getItem('entity');
+    } else {
+      alert("missing token");
+    }
 
-    const token = this.cookieService.get('uID_i') || '67ff50f596c85';
-    const entity = localStorage.getItem('entity') ?? 'dev'; // Default entity
-    const langSyst = localStorage.getItem('langSyst') ?? 'az'; // Default language
-
-    // Attach them to all requests
-    sendDatas.token = token;
-    sendDatas.entity = entity;
-    sendDatas.langSyst = langSyst;
-
-    console.log('🔧 Final data sent to backend:', sendDatas);
-
+    console.log('Sending to server: ');
+    console.log(sendDatas);
 
     const body = JSON.stringify(sendDatas);
 
@@ -47,81 +175,87 @@ export class StoreService {
     );
   }
 
-  initService(): void {
-    const initData = {};
-    this.onLoadData(initData).subscribe(response => {
-      console.log('Initial load response (manual call):', response);
-    });
-  }
-
-
   actionsStore(receivedData: any) {
     if (!receivedData || receivedData === 'error') {
       console.warn('Received invalid or error response:', receivedData);
       return;
     }
 
-    console.log('Received data:', receivedData);
-
     const actions = receivedData.actions;
-    console.error('Received actions:', actions);
     if (!Array.isArray(actions)) {
       console.warn('No actions array found in response.');
       return;
     }
 
     for (let i = 0; i < actions.length; i++) {
-      alert(JSON.stringify(actions[i], null, 2));
       const action = actions[i];
       const type = action.actiontype;
 
-      console.log(`Processing action #${i + 1} of type: ${type}`);
-
       switch (type) {
         case 'init':
-          console.log('→ Init action:', action.receivedData);
           break;
 
         case 'updateInfo':
-          console.log('→ Update Info Params:', action.params);
           break;
 
         case 'login':
-          console.log('→ Login action:', action.params || action.receivedData);
           break;
 
-        case 'getForm': {
-          const formPayload = this.extractReceivedData(action);
+        case 'initialization': {
+          const token = action['token'];
+          const entity = action['entity'];
 
-          if (!formPayload.encrVar) {
-            console.warn("Missing encrVar in getForm action:", formPayload);
-            break;
-          }
-          this.onLoadData(formPayload).subscribe(response => {
-            console.log("↳ getForm response (nested):", response);
-            this.formDataSubject.next(response);
-          });
+          localStorage.setItem('token', token);
+          localStorage.setItem('entity', entity);
+
+          this.onLoadData({
+            frontend_post: 'getUserData',
+            langSyst: this.cookieService.get('Language')
+          }).subscribe(res => this.actionsStore(res));
+
+          this.onLoadData({
+            frontend_post: 'getMenu',
+            langSyst: this.cookieService.get('Language')
+          }).subscribe(res => this.actionsStore(res));
+
+          this.onLoadData({
+            frontend_post: 'getFavorites',
+            langSyst: this.cookieService.get('Language')
+          }).subscribe(res => this.actionsStore(res));
+
+          this.onLoadData({
+            frontend_post: 'getInfo',
+            langSyst: this.cookieService.get('Language')
+          }).subscribe(res => this.actionsStore(res));
+
+          setTimeout(() => {
+            const expiration = new Date(Date.now() + 1000 * 60 * 60 * 24 * 30); // 30 days
+            this.cookieService.set(
+              'test_login',
+              localStorage.getItem('userName') || '',
+              expiration,
+              '/'
+            );
+            (window as any).dialogService.shows = 'form';
+            (window as any).overlayService.closeDialog('OverlayLoginComponent');
+          }, 1000);
+
           break;
         }
 
-        default:
-          console.log(`→ Unhandled action type "${type}"`, action);
+        case 'updateUserData': {
+          localStorage.setItem('userData', JSON.stringify(action['params']));
+          break;
+        }
+
+        case 'updateMenu': {
+          localStorage.setItem('menu', JSON.stringify(action['params']));
+          console.log('Menu:', action['params']);
+          break;
+        }
       }
     }
   }
-
-  private extractReceivedData(action: any): any {
-    const rd = action.receivedData ?? {};
-    alert(rd);
-    return {
-      frontend_post: rd.frontend_post || action.frontend_post || 'getForm',
-      encrVar: rd.encrVar,
-      token: rd.token,
-      entity: rd.entity,
-      langSyst: rd.langSyst || 'en'
-    };
-  }
-
 
   fetchAllAppData(): void {
     const lang = this.cookieService.get('Language');
@@ -129,27 +263,45 @@ export class StoreService {
     const requests = [
       {
         name: 'getUserData',
-        data: {frontend_post: 'getUserData', langSyst: lang}
+        data: {
+          frontend_post: 'getUserData',
+          langSyst: lang
+        }
       },
       {
         name: 'getMenu',
-        data: {frontend_post: 'getMenu', langSyst: lang}
+        data: {
+          frontend_post: 'getMenu',
+          langSyst: lang
+        }
       },
       {
         name: 'getFavorites',
-        data: {frontend_post: 'getFavorites', langSyst: lang}
+        data: {
+          frontend_post: 'getFavorites',
+          langSyst: lang
+        }
       },
       {
         name: 'getInfo',
-        data: {frontend_post: 'getInfo', langSyst: lang}
+        data: {
+          frontend_post: 'getInfo',
+          langSyst: lang
+        }
       }
     ];
 
     requests.forEach(req => {
       this.onLoadData(req.data).subscribe(response => {
-        console.log(`📦 ${req.name} response:`, response);
-        this.actionsStore(response); // Optional: to route through your existing logic
+        this.actionsStore(response);
       });
     });
   }
 }
+
+
+
+
+
+
+

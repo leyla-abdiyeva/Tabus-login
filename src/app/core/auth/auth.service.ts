@@ -31,7 +31,7 @@ export class AuthService {
 
           // Always set required values
           if (!localStorage.getItem('entity')) {
-            localStorage.setItem('entity', 'main');
+            localStorage.setItem('entity', 'dev');
           }
           if (!localStorage.getItem('langSyst')) {
             localStorage.setItem('langSyst', 'en');
@@ -44,35 +44,6 @@ export class AuthService {
       }),
       catchError(error => {
         console.error('Login error:', error);
-        return of('error');
-      })
-    );
-  }
-
-  // Initialization Method - Handle the initialization action
-  initialization(token: string, entity: string, langSyst: string): Observable<any> {
-    const sendDatas = {
-      token: token,
-      entity: entity,
-      langSyst: langSyst,
-      frontend_post: 'initialization'  // Action type for initialization
-    };
-
-    return this.storeService.onLoadData(sendDatas).pipe(
-      tap(response => {
-        if (response && response !== 'error') {
-          console.log('Initialization successful!', response);
-          // Store any necessary data from initialization (e.g., user data, menu data)
-          localStorage.setItem('userData', JSON.stringify(response.userData));
-          localStorage.setItem('menuData', JSON.stringify(response.menuData));
-          localStorage.setItem('favoritesData', JSON.stringify(response.favoritesData));
-          localStorage.setItem('infoData', JSON.stringify(response.infoData));
-        } else {
-          console.log('Initialization failed');
-        }
-      }),
-      catchError(error => {
-        console.error('Initialization error:', error);
         return of('error');
       })
     );

@@ -16,7 +16,7 @@ export class MainService {
   // Function to fetch data from backend PHP
   fetchMenuItems(): Observable<any> {
     const requests = {
-      frontend_post: 'getMenu'
+      frontend_post: 'getMenu',
     };
 
     return this.storeService.onLoadData(requests).pipe(
@@ -32,6 +32,30 @@ export class MainService {
       })
     );
   }
+
+  // Function to fetch data from backend PHP
+  fetchForm(payload: {
+    frontend_post: string;
+    encrVar: string;
+    langSyst: string;
+    parentIsModal: number;
+  }): Observable<any> {
+
+    return this.storeService.onLoadData(payload).pipe(
+      tap(response => {
+        if (response !== 'error') {
+          console.log('Form fetch successful!', response);
+        } else {
+          console.log('Form fetch failed');
+        }
+      }),
+      catchError(error => {
+        console.error('Form fetch error:', error);
+        return of('error');
+      })
+    );
+  }
+
 
   updateFormData(data: any): void {
     this.formDataSubject.next(data);
@@ -56,5 +80,8 @@ export class MainService {
     });
   }
 
+  handleInit(data: any) {
+    console.log('Handling init payload in service:', data);
+  }
 
 }
