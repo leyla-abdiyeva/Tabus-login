@@ -2,7 +2,7 @@ import {Component, OnInit, inject} from '@angular/core';
 import {MainService} from '../../core/services/main/main.service';
 import {CookieService} from 'ngx-cookie-service';
 import {FormsModule} from '@angular/forms';
-
+import {DynamicButtonComponent} from '../dynamic-button/dynamic-button.component';
 
 @Component({
   selector: 'app-form',
@@ -11,6 +11,7 @@ import {FormsModule} from '@angular/forms';
   styleUrls: ['./form.component.css'],
   imports: [
     FormsModule,
+    DynamicButtonComponent,
   ]
 })
 export class FormComponent implements OnInit {
@@ -18,7 +19,14 @@ export class FormComponent implements OnInit {
   private cookieService = inject(CookieService);
 
   ngOnInit() {
-    this.loadForm("dEVtdEVWb2FwUlFWVThQVGVFaU5yZUJyWUt4K2cwRWl2TkFzSU9xMGZaYzdsUmdVbm8vbFpLM0htN3JnRDAwN3RBYzM0TWpsTnJPaFUrKzc4Tzlra0VZZ1V6NzAvbzhYSDdpb0pWNDh3STByWjRibkh1RnpGK2tWSHROdjZMeXptbFEzSjF6Um1qb3c4cmgwZ1dMMm8xY0crUXhtZGpEcFE0NG4xVUsyWWVlS25PTFRWYWRNbHYvaytBQzZsK3JLRHVwRTE0cHJLQWJXbUlZbDBFeXN0S1RwZ0doSkNremcxUUdjWDRtWDgwOHJTVXBQeGZvNjRhV3NwbkQrKzRVTnVmZ3U4MGV1WEZTZGprU1IwbiszVFViZ2RuZTFFM25DS3RCRVhPbkdTYStWNC9LZWQ0QVpFWkJJbnpMWHYrWHpveXlCOWRVVjBCVWhPQXlIbWJNK3R3PT0=");
+    // this.loadForm("dEVtdEVWb2FwUlFWVThQVGVFaU5yZUJyWUt4K2cwRWl2TkFzSU9xMGZaYzdsUmdVbm8vbFpLM0htN3JnRDAwN3RBYzM0TWpsTnJPaFUrKzc4Tzlra0VZZ1V6NzAvbzhYSDdpb0pWNDh3STByWjRibkh1RnpGK2tWSHROdjZMeXptbFEzSjF6Um1qb3c4cmgwZ1dMMm8xY0crUXhtZGpEcFE0NG4xVUsyWWVlS25PTFRWYWRNbHYvaytBQzZsK3JLRHVwRTE0cHJLQWJXbUlZbDBFeXN0S1RwZ0doSkNremcxUUdjWDRtWDgwOHJTVXBQeGZvNjRhV3NwbkQrKzRVTnVmZ3U4MGV1WEZTZGprU1IwbiszVFViZ2RuZTFFM25DS3RCRVhPbkdTYStWNC9LZWQ0QVpFWkJJbnpMWHYrWHpveXlCOWRVVjBCVWhPQXlIbWJNK3R3PT0=");
+    this.mainService.selectedEncrVar$.subscribe(encrVar => {
+      if (encrVar) {
+        this.loadForm(encrVar);
+        console.log('✅ EncrVar received:', encrVar);
+        alert(encrVar);
+      }
+    });
   }
 
   loadForm(encrVar: string): void {
@@ -37,5 +45,15 @@ export class FormComponent implements OnInit {
     });
   }
 
+  updatedTables: { [key: string]: any[] } = {};
+
+  onTableDataChange(event: { id: string, data: any[] }) {
+    this.updatedTables[event.id] = event.data;
+    console.log('Updated Tables:', this.updatedTables);
+  }
+
+  onSubmit() {
+    console.log('Submitted Data:', this.updatedTables);
+  }
 
 }

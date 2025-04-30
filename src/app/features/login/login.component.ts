@@ -13,7 +13,6 @@ import {CookieService} from 'ngx-cookie-service';
     ReactiveFormsModule,
     NgClass,
   ],
-
   templateUrl: './login.component.html',
   standalone: true,
   styleUrl: './login.component.css'
@@ -35,6 +34,8 @@ export class LoginComponent implements OnInit {
 
   // Check if the user is already logged in
   ngOnInit() {
+    // localStorage.setItem('token', '6811be2baab8b');
+    // localStorage.setItem('entity', 'dev'); // replace with real value
     // this.storeService.initService();
   }
 

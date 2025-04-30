@@ -45,3 +45,14 @@
 <!--    {{ btn.buttonname }}-->
 <!--  </button>-->
 <!--</div>-->
+
+<!--<div *ngFor="let table of tables">-->
+<!--  <app-dynamic-table-->
+<!--    [tableId]="table.id"-->
+<!--    [columns]="table.columns"-->
+<!--    [data]="table.data"-->
+<!--    (dataChange)="onTableDataChange($event)">-->
+<!--  </app-dynamic-table>-->
+<!--</div>-->
+
+<app-dynamic-button (submitClicked)="onSubmit()"></app-dynamic-button>

@@ -107,6 +107,9 @@ export class MenuComponent implements OnInit {
       this.selectedNode = node;
       sessionStorage.setItem('activeNode', JSON.stringify(node));
 
+      // ⬅️ Set shared encrVar for other components (like FormComponent)
+      this.mainService.setSelectedEncrVar(node.encrvar);
+
       const datas = {
         frontend_post: 'getForm',
         encrVar: node.encrvar,

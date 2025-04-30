@@ -1,56 +1,64 @@
 import {inject, Injectable} from '@angular/core';
-import {BehaviorSubject, Observable, of, Subject, tap} from 'rxjs';
-import {catchError} from 'rxjs/operators';
+import {BehaviorSubject, Observable, of} from 'rxjs';
+import {catchError, tap} from 'rxjs/operators';
 import {StoreService} from '../store/store.service';
 
 @Injectable({
-  providedIn: 'root',
+  providedIn: 'root'
 })
+
 export class MainService {
   private storeService = inject(StoreService);
   private formDataSubject = new BehaviorSubject<any>(null);
-  formData$ = this.formDataSubject.asObservable();
+  private selectedEncrVarSubject = new BehaviorSubject<string | null>(null);
+  selectedEncrVar$ = this.selectedEncrVarSubject.asObservable();
 
-  constructor() {}
+  constructor() {
+  }
 
-  // Function to fetch data from backend PHP
+  // Call this when a menu item is clicked
+  setSelectedEncrVar(encrVar: string) {
+    this.selectedEncrVarSubject.next(encrVar);
+  }
+
   fetchMenuItems(): Observable<any> {
-    const requests = {
-      frontend_post: 'getMenu',
-    };
-
-    return this.storeService.onLoadData(requests).pipe(
-      tap(response => {
-        if (response !== 'error') {
-          console.log('Login successful!', response, );
-        } else {
-          console.log('Login failed');
-        }
-      }),
-      catchError(error => {
+    return this.storeService.onLoadData({frontend_post: 'getMenu'}).pipe(
+      tap(res => console.log('Menu fetch:', res)),
+      catchError(err => {
+        console.error('Menu fetch error:', err);
         return of('error');
       })
     );
   }
 
-  // Function to fetch data from backend PHP
+  // fetchForm(payload: {
+  //   frontend_post: string;
+  //   encrVar: string;
+  //   langSyst: string;
+  //   parentIsModal: number;
+  // }): Observable<any> {
+  //   return this.storeService.onLoadData(payload).pipe(
+  //     tap(res => console.log('Form fetch:', res)),
+  //     catchError(err => {
+  //       console.error('Form fetch error:', err);
+  //       return of('error');
+  //     })
+  //   );
+  // }
+
   fetchForm(payload: {
     frontend_post: string;
     encrVar: string;
     langSyst: string;
     parentIsModal: number;
   }): Observable<any> {
-
     return this.storeService.onLoadData(payload).pipe(
-      tap(response => {
-        if (response !== 'error') {
-          console.log('Form fetch successful!', response);
-        } else {
-          console.log('Form fetch failed');
-        }
+      tap(res => {
+        console.log('📥 Form fetch response:', res);
+        console.log('🔑 encrVar sent:', payload.encrVar);
       }),
-      catchError(error => {
-        console.error('Form fetch error:', error);
+      catchError(err => {
+        console.error('❌ Form fetch error:', err);
         return of('error');
       })
     );
@@ -61,27 +69,21 @@ export class MainService {
     this.formDataSubject.next(data);
   }
 
-  sendData(data: any): void {
-    this.storeService.onLoadData(data).subscribe(response => {
+  sendData(payload: any): void {
+    this.storeService.onLoadData(payload).subscribe(response => {
       if (response !== 'error') {
         const getFormAction = response.actions?.find((a: any) => a.actiontype === 'getForm');
-
-        if (getFormAction) {
-          const formParams = response.params?.[0];
-          if (formParams) {
-            this.updateFormData(formParams); // ✅ send usable form config to FormComponent
-          } else {
-            console.warn('No form parameters found in response');
-          }
+        const formParams = getFormAction?.params?.[0];
+        if (formParams) {
+          this.updateFormData(formParams);
         } else {
-          console.warn('No getForm action in response');
+          console.warn('No usable form data');
         }
       }
     });
   }
 
-  handleInit(data: any) {
-    console.log('Handling init payload in service:', data);
+  handleInit(data: any): void {
+    console.log('Init logic not implemented:', data);
   }
-
 }
