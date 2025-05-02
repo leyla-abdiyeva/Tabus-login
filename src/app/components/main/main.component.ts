@@ -1,8 +1,8 @@
-import {Component, inject, OnInit} from '@angular/core';
+import {AfterViewInit, Component, inject, OnInit, ViewChild, ViewContainerRef} from '@angular/core';
 import {AuthService} from '../../core/auth/auth.service';
-import {HttpClient} from '@angular/common/http';
 import {MainService} from '../../core/services/main/main.service';
 import {MenuComponent} from '../sidebar/menu/menu.component';
+import {FormComponent} from '../form/form.component';
 
 @Component({
   selector: 'app-main',
@@ -13,7 +13,9 @@ import {MenuComponent} from '../sidebar/menu/menu.component';
   standalone: true,
   styleUrl: './main.component.css'
 })
-export class MainComponent implements OnInit{
+export class MainComponent implements OnInit, AfterViewInit{
+  @ViewChild('dynamicContainer', { read: ViewContainerRef }) container!: ViewContainerRef;
+
   private mainService= inject(MainService);
   private authService= inject(AuthService);
 
@@ -23,6 +25,17 @@ export class MainComponent implements OnInit{
   ngOnInit() {
     this.triggerInit();
     this.loadData();
+  }
+
+  ngAfterViewInit() {
+    this.mainService.selectedEncrVar$.subscribe(encrVar => {
+      if (encrVar) {
+        this.container.clear();
+        const componentRef = this.container.createComponent(FormComponent);
+        // Optionally pass the encrVar to FormComponent instance
+        componentRef.instance.encrVar = encrVar;
+      }
+    });
   }
 
   loadData() {

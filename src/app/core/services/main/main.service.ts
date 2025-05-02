@@ -31,21 +31,6 @@ export class MainService {
     );
   }
 
-  // fetchForm(payload: {
-  //   frontend_post: string;
-  //   encrVar: string;
-  //   langSyst: string;
-  //   parentIsModal: number;
-  // }): Observable<any> {
-  //   return this.storeService.onLoadData(payload).pipe(
-  //     tap(res => console.log('Form fetch:', res)),
-  //     catchError(err => {
-  //       console.error('Form fetch error:', err);
-  //       return of('error');
-  //     })
-  //   );
-  // }
-
   fetchForm(payload: {
     frontend_post: string;
     encrVar: string;
@@ -55,7 +40,6 @@ export class MainService {
     return this.storeService.onLoadData(payload).pipe(
       tap(res => {
         console.log('📥 Form fetch response:', res);
-        console.log('🔑 encrVar sent:', payload.encrVar);
       }),
       catchError(err => {
         console.error('❌ Form fetch error:', err);

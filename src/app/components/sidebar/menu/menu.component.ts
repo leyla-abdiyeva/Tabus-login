@@ -6,6 +6,7 @@ import {CookieService} from 'ngx-cookie-service';
 import {MatSidenavContainer, MatSidenavModule} from '@angular/material/sidenav';
 import {KeyValuePipe, NgForOf, NgIf} from '@angular/common';
 import {StoreService} from '../../../core/services/store/store.service';
+import {Router} from '@angular/router';
 
 export interface MenuNode {
   name: string;
@@ -47,6 +48,7 @@ export class MenuComponent implements OnInit {
   private mainService = inject(MainService);
   private cookieService = inject(CookieService);
   private storeService = inject(StoreService);
+  private router = inject(Router);
 
   ngOnInit(): void {
     this.loadMenu();
@@ -102,13 +104,14 @@ export class MenuComponent implements OnInit {
   hasChild = (_: number, node: MenuNode) =>
     !!node.children && node.children.length > 0;
 
-  onItemClick(node: MenuNode): void {
+  onMenuClick(node: MenuNode): void {
     if (!this.hasChild(0, node)) {
       this.selectedNode = node;
       sessionStorage.setItem('activeNode', JSON.stringify(node));
 
       // ⬅️ Set shared encrVar for other components (like FormComponent)
       this.mainService.setSelectedEncrVar(node.encrvar);
+      // this.router.navigate(['/form']);
 
       const datas = {
         frontend_post: 'getForm',

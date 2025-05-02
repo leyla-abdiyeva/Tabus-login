@@ -34,8 +34,8 @@ export class LoginComponent implements OnInit {
 
   // Check if the user is already logged in
   ngOnInit() {
-    // localStorage.setItem('token', '6811be2baab8b');
-    // localStorage.setItem('entity', 'dev'); // replace with real value
+    localStorage.setItem('token', '68148476d0493');
+    localStorage.setItem('entity', 'dev');
     // this.storeService.initService();
   }
 

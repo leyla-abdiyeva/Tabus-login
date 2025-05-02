@@ -1,8 +1,9 @@
-import {Component, OnInit, inject} from '@angular/core';
+import {Component, OnInit, inject, Input, ViewContainerRef, ViewChild, ComponentRef} from '@angular/core';
 import {MainService} from '../../core/services/main/main.service';
 import {CookieService} from 'ngx-cookie-service';
 import {FormsModule} from '@angular/forms';
 import {DynamicButtonComponent} from '../dynamic-button/dynamic-button.component';
+import {TableComponent} from '../table/table.component';
 
 @Component({
   selector: 'app-form',
@@ -15,6 +16,10 @@ import {DynamicButtonComponent} from '../dynamic-button/dynamic-button.component
   ]
 })
 export class FormComponent implements OnInit {
+  @ViewChild('tableContainer', { read: ViewContainerRef }) tableContainer!: ViewContainerRef;
+  tableComponentRef!: ComponentRef<TableComponent>;
+  @Input() encrVar!: string;
+
   private mainService = inject(MainService);
   private cookieService = inject(CookieService);
 
@@ -27,6 +32,24 @@ export class FormComponent implements OnInit {
         alert(encrVar);
       }
     });
+
+    console.log('Received EncrVar:', this.encrVar);
+    this.loadForm(this.encrVar);
+    this.loadTable();
+  }
+
+
+  loadTable(): void {
+    this.tableContainer.clear(); // clear existing table if any
+    this.tableComponentRef = this.tableContainer.createComponent(TableComponent);
+
+    // Example: pass data or form context
+    this.tableComponentRef.instance.dataSource = [
+      { uid: '123', Code: 'Err01', Template: 'Some error...' },
+      // ...
+    ];
+
+    // Optional: communicate between form ↔ table via Input/Output or shared service
   }
 
   loadForm(encrVar: string): void {
@@ -39,11 +62,17 @@ export class FormComponent implements OnInit {
 
     this.mainService.fetchForm(payload).subscribe({
       next: (response) => {
-        // Handle form response here
+        const receivedEncrVar = response?.actions?.[0]?.receivedData?.encrVar;
+        console.log('🔍 Received encrVar from backend:', receivedEncrVar);
+
+        // Optional: log full response
+        console.log('📦 Full form response:', response);
       },
-      error: (err) => console.error('Error loading form:', err)
+      error: (err) => console.error('❌ Error loading form:', err)
     });
   }
+
+
 
   updatedTables: { [key: string]: any[] } = {};
 

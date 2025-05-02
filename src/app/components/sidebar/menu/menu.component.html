@@ -15,7 +15,7 @@
 
         <!-- Nested Tree Node (works for both leaf and expandable nodes) -->
         <mat-nested-tree-node *matTreeNodeDef="let node">
-          <div class="menu-item" [class.selected]="node === selectedNode" (click)="onItemClick(node)">
+          <div class="menu-item" [class.selected]="node === selectedNode" (click)="onMenuClick(node)">
             <span class="icon">{{ hasChild(0, node) ? '📁' : '🏠' }}</span>
             <span class="label">{{ node.name }}</span>
             <span class="arrow" *ngIf="hasChild(0, node)">
@@ -31,7 +31,7 @@
 
         <!-- Expandable Node -->
         <mat-nested-tree-node *matTreeNodeDef="let node; when: hasChild">
-          <div class="menu-item" (click)="onItemClick(node)">
+          <div class="menu-item" (click)="onMenuClick(node)">
             <span class="icon">📁</span>
             <span class="label">{{ node.name }}</span>
             <span class="arrow">{{ treeControl.isExpanded(node) ? '▼' : '▶' }}</span>
@@ -50,7 +50,7 @@
       </div>
 
       <div *ngIf="favoritesExpanded" class="favorites-section">
-        <div *ngFor="let fav of favoritesData" class="menu-item" (click)="onItemClick(fav)">
+        <div *ngFor="let fav of favoritesData" class="menu-item" (click)="onMenuClick(fav)">
           <span class="icon">📌</span>
           <span class="label">{{ fav.name }}</span>
         </div>
