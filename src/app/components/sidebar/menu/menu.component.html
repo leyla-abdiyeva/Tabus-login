@@ -14,8 +14,8 @@
       <mat-tree [dataSource]="dataSource" [treeControl]="treeControl" *ngIf="menuExpanded" >
 
         <!-- Nested Tree Node (works for both leaf and expandable nodes) -->
-        <mat-nested-tree-node *matTreeNodeDef="let node">
-          <div class="menu-item" [class.selected]="node === selectedNode" (click)="onMenuClick(node)">
+        <mat-nested-tree-node *matTreeNodeDef="let node; when: isLeaf">
+        <div class="menu-item" [class.selected]="node === selectedNode" (click)="onMenuClick(node)">
             <span class="icon">{{ hasChild(0, node) ? '📁' : '🏠' }}</span>
             <span class="label">{{ node.name }}</span>
             <span class="arrow" *ngIf="hasChild(0, node)">

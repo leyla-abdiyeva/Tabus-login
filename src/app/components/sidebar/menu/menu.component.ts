@@ -35,6 +35,7 @@ export interface MenuNode {
 export class MenuComponent implements OnInit {
   treeControl = new NestedTreeControl<MenuNode>(node => node.children);
   dataSource = new MatTreeNestedDataSource<MenuNode>();
+  isLeaf = (_: number, node: MenuNode) => !this.hasChild(0, node);
 
   selectedNode: MenuNode | null = null;
   menuLoaded = false;
@@ -56,6 +57,10 @@ export class MenuComponent implements OnInit {
     this.loadFavoritesData()
     this.storeService.fetchAllAppData();
     this.restoreSelectedNode();
+
+    this.mainService.formData$.subscribe(data => {
+      this.formData = data;
+    });
   }
 
   loadMenu(): void {
@@ -111,7 +116,6 @@ export class MenuComponent implements OnInit {
 
       // ⬅️ Set shared encrVar for other components (like FormComponent)
       this.mainService.setSelectedEncrVar(node.encrvar);
-      // this.router.navigate(['/form']);
 
       const datas = {
         frontend_post: 'getForm',

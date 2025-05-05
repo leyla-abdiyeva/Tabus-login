@@ -1,47 +1,24 @@
-import {AfterViewInit, Component, ComponentRef, Injector, OnInit, ViewChild, ViewContainerRef} from '@angular/core';
-import {
-  MatCell,
-  MatCellDef,
-  MatColumnDef,
-  MatHeaderCell,
-  MatHeaderRow,
-  MatHeaderRowDef,
-  MatRow,
-  MatRowDef,
-  MatTable,
-  MatTableModule
-} from '@angular/material/table';
-import {MatButton, MatButtonModule} from '@angular/material/button';
-import {MatCard, MatCardHeader, MatCardModule} from '@angular/material/card';
+import {Component, OnInit} from '@angular/core';
+import {IgxGridComponent, IgxGridModule} from 'igniteui-angular';
 
 @Component({
+  standalone: true,
   selector: 'app-table',
   imports: [
-    MatTableModule,
-    MatButtonModule,
-    MatTable,
-    MatHeaderCell,
-    MatCell,
-    MatButton,
-    MatCellDef,
-    MatHeaderRowDef,
-    MatHeaderRow,
-    MatRow,
-    MatRowDef,
-    MatColumnDef,
-    MatCard,
-    MatCardHeader,
-    MatCardModule
+    IgxGridModule,
+    IgxGridComponent
   ],
   templateUrl: './table.component.html',
   styleUrl: './table.component.css'
 })
 
 export class TableComponent implements OnInit {
-  formTitle = 'Errors';  // Title for the form (from your JSON)
-  displayedColumns: string[] = ['uid', 'Code', 'Type', 'Language', 'Template', 'Source', 'SourceAction', 'Action'];
-  dataSource: any = [];  // DataSource for the table
-
+  // dataSource: any = [];  // DataSource for the table
+  public dataSource = [
+    { ID: 1, Name: 'Alice', Age: 30 },
+    { ID: 2, Name: 'Bob', Age: 25 },
+    { ID: 3, Name: 'Charlie', Age: 35 }
+  ];
   ngOnInit() {
     };
 

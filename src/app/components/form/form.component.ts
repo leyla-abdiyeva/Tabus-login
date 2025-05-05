@@ -27,59 +27,69 @@ export class FormComponent implements OnInit {
     // this.loadForm("dEVtdEVWb2FwUlFWVThQVGVFaU5yZUJyWUt4K2cwRWl2TkFzSU9xMGZaYzdsUmdVbm8vbFpLM0htN3JnRDAwN3RBYzM0TWpsTnJPaFUrKzc4Tzlra0VZZ1V6NzAvbzhYSDdpb0pWNDh3STByWjRibkh1RnpGK2tWSHROdjZMeXptbFEzSjF6Um1qb3c4cmgwZ1dMMm8xY0crUXhtZGpEcFE0NG4xVUsyWWVlS25PTFRWYWRNbHYvaytBQzZsK3JLRHVwRTE0cHJLQWJXbUlZbDBFeXN0S1RwZ0doSkNremcxUUdjWDRtWDgwOHJTVXBQeGZvNjRhV3NwbkQrKzRVTnVmZ3U4MGV1WEZTZGprU1IwbiszVFViZ2RuZTFFM25DS3RCRVhPbkdTYStWNC9LZWQ0QVpFWkJJbnpMWHYrWHpveXlCOWRVVjBCVWhPQXlIbWJNK3R3PT0=");
     this.mainService.selectedEncrVar$.subscribe(encrVar => {
       if (encrVar) {
-        this.loadForm(encrVar);
+        this.loadTableData(encrVar);
         console.log('✅ EncrVar received:', encrVar);
         alert(encrVar);
       }
     });
 
     console.log('Received EncrVar:', this.encrVar);
-    this.loadForm(this.encrVar);
-    this.loadTable();
+    this.loadTableData(this.encrVar);
   }
 
-
-  loadTable(): void {
-    this.tableContainer.clear(); // clear existing table if any
+  createComponent(){
     this.tableComponentRef = this.tableContainer.createComponent(TableComponent);
-
-    // Example: pass data or form context
-    this.tableComponentRef.instance.dataSource = [
-      { uid: '123', Code: 'Err01', Template: 'Some error...' },
-      // ...
-    ];
-
-    // Optional: communicate between form ↔ table via Input/Output or shared service
   }
 
-  loadForm(encrVar: string): void {
+
+  loadTableData(encrVar: string): void {
     const payload = {
       frontend_post: 'getForm',
-      encrVar: encrVar,
+      encrVar,
       langSyst: this.cookieService.get('Language'),
       parentIsModal: 0
     };
 
+
     this.mainService.fetchForm(payload).subscribe({
       next: (response) => {
-        const receivedEncrVar = response?.actions?.[0]?.receivedData?.encrVar;
-        console.log('🔍 Received encrVar from backend:', receivedEncrVar);
-
-        // Optional: log full response
         console.log('📦 Full form response:', response);
+
+        const action = response?.actions?.[0];
+        const formData = action?.receivedData;
+
+        if (!formData || !formData.elements) {
+          console.error('Missing form elements:', formData);
+          return;
+        }
+
+        console.log('Received form data:', formData);
+        this.renderTableElements(formData.elements); // <- your rendering logic
       },
-      error: (err) => console.error('❌ Error loading form:', err)
+      error: (err) => console.error('Error loading form:', err)
     });
   }
 
 
 
+  renderTableElements(elements: any[]): void {
+    this.tableContainer.clear();
+
+    elements.forEach(element => {
+      if (element.type === 'localTable') {
+        const compRef = this.tableContainer.createComponent(TableComponent);
+        compRef.instance.dataSource = element.rows || []; // or any relevant data
+        // Store or subscribe if needed
+      }
+      // else if (element.type === 'button') { ... } // Handle other components
+    });
+  }
+
+
+
+
   updatedTables: { [key: string]: any[] } = {};
 
-  onTableDataChange(event: { id: string, data: any[] }) {
-    this.updatedTables[event.id] = event.data;
-    console.log('Updated Tables:', this.updatedTables);
-  }
 
   onSubmit() {
     console.log('Submitted Data:', this.updatedTables);

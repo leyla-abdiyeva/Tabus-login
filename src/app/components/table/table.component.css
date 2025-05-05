@@ -1,0 +1,4 @@
+.grid-container {
+  flex: 1; /* let each grid take up equal space */
+  min-width: 0; /* prevents overflow issues */
+}

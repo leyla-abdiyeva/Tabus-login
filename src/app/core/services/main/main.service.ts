@@ -12,6 +12,8 @@ export class MainService {
   private formDataSubject = new BehaviorSubject<any>(null);
   private selectedEncrVarSubject = new BehaviorSubject<string | null>(null);
   selectedEncrVar$ = this.selectedEncrVarSubject.asObservable();
+  formData$ = this.formDataSubject.asObservable();
+
 
   constructor() {
   }

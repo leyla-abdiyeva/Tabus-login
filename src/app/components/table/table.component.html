@@ -1,54 +1,8 @@
-<mat-card>
-  <mat-card-header>
-    <mat-card-title>{{ formTitle }}</mat-card-title>
-  </mat-card-header>
-  <mat-table [dataSource]="dataSource" class="mat-elevation-z8">
-
-    <!-- Column Definitions -->
-    <ng-container matColumnDef="uid">
-      <mat-header-cell *matHeaderCellDef> UID </mat-header-cell>
-      <mat-cell *matCellDef="let element"> {{ element.uid }} </mat-cell>
-    </ng-container>
-
-    <ng-container matColumnDef="Code">
-      <mat-header-cell *matHeaderCellDef> Code </mat-header-cell>
-      <mat-cell *matCellDef="let element"> {{ element.Code }} </mat-cell>
-    </ng-container>
-
-    <ng-container matColumnDef="Type">
-      <mat-header-cell *matHeaderCellDef> Type </mat-header-cell>
-      <mat-cell *matCellDef="let element"> {{ element.Type }} </mat-cell>
-    </ng-container>
-
-    <ng-container matColumnDef="Language">
-      <mat-header-cell *matHeaderCellDef> Language </mat-header-cell>
-      <mat-cell *matCellDef="let element"> {{ element.Language }} </mat-cell>
-    </ng-container>
-
-    <ng-container matColumnDef="Template">
-      <mat-header-cell *matHeaderCellDef> Template </mat-header-cell>
-      <mat-cell *matCellDef="let element"> {{ element.Template }} </mat-cell>
-    </ng-container>
-
-    <ng-container matColumnDef="Source">
-      <mat-header-cell *matHeaderCellDef> Source </mat-header-cell>
-      <mat-cell *matCellDef="let element"> {{ element.Source }} </mat-cell>
-    </ng-container>
-
-    <ng-container matColumnDef="SourceAction">
-      <mat-header-cell *matHeaderCellDef> Source Action </mat-header-cell>
-      <mat-cell *matCellDef="let element"> {{ element['Source Action'] }} </mat-cell>
-    </ng-container>
-
-    <ng-container matColumnDef="Action">
-      <mat-header-cell *matHeaderCellDef> Action </mat-header-cell>
-      <mat-cell *matCellDef="let element">
-        <button mat-button>Delete</button>
-      </mat-cell>
-    </ng-container>
-
-    <!-- Header and Row -->
-    <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
-    <mat-row *matRowDef="let row; columns: displayedColumns;"></mat-row>
-  </mat-table>
-</mat-card>
+<p>Hello World</p>
+<div class="grid-container">
+<igx-grid [data]="dataSource" [autoGenerate]="false" [rowEditable]="true">
+  <igx-column field="ID" header="ID"></igx-column>
+  <igx-column field="Name" header="Name"></igx-column>
+  <igx-column field="Age" header="Age"></igx-column>
+</igx-grid>
+</div>

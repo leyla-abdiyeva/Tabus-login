@@ -1,0 +1,5 @@
+.arrange{
+  display: flex;
+  flex-direction: row;
+  gap: 1rem; /* optional spacing between grids */
+}
